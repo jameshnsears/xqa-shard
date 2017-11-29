@@ -26,10 +26,26 @@ before_install:
   - pip install -r requirements.txt
 
 script:
-  - export PYTHONPATH=/home/travis/build/jameshnsears/xqa-ingest/src:$PYTHONPATH
-  - python src/ingester.py -p ../test/resources/test-data/good
+  - export PYTHONPATH=/home/travis/build/jameshnsears/xqa-shard/src:$PYTHONPATH
+  - coverage run --omit */site-packages/*,*/virtualenv/*,*/org/basex/* src/xqa/shard.py > shard.log &
+  - python test/integration/shard_test.py > shard_test.log
+
+  - cat shard.log
+  - cat shard_test.log
+
+  - grep "sha256=f1bcf55ede4b89962b411213bcbd1918f3e1659d786c1aff20fd5bd89fbcae70" shard.log
+
+  - grep "sha256(body)=f1bcf55ede4b89962b411213bcbd1918f3e1659d786c1aff20fd5bd89fbcae70" shard_test.log
+  - grep "xquery_response" shard_test.log | grep "body=b"
+
+
+  - mkdir coverage
+  - mv .coverage coverage/.coverage.0
 
 after_success:
-  - pytest --flake8 --cov-report term-missing --cov=. test
-  - codecov --token=98e1e4b3-b943-4009-9e90-371b0ac5237d
-  - COVERALLS_REPO_TOKEN=umsIY7d4uf3Ay5aeMisTKDmrCpAM3Svu8 coveralls
+  - pytest --flake8 --cov-report term-missing --cov=. test/storage_service_test.py
+  - mv .coverage coverage/.coverage.1
+  - cd coverage
+  - coverage combine
+  - codecov --token=54978e9f-f156-442a-a471-4f676d8ff923
+  - COVERALLS_REPO_TOKEN=gNQsMIHlJD0YeTwwcdM1UVEh4lJxUV77t coveralls

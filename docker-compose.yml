@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  xqa-shard:
+    build: .
+    image: "xqa-shard"
+    network_mode: "host"
