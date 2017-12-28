@@ -20,4 +20,4 @@ storage_database_name = 'xqa'
 
 logging.basicConfig(stream=sys.stdout,
                     level=logging.INFO,
-                    format='%(asctime)s  %(levelname)8s %(process)d --- [%(threadName)12s]: %(funcName)30s, %(lineno)3s: %(message)s')
+                    format="%(asctime)s  %(levelname)8s --- [%(threadName)20s]: %(funcName)25s, %(lineno)3s: %(message)s")
