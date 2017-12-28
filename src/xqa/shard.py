@@ -1,5 +1,6 @@
 import hashlib
 import logging
+import os
 from uuid import uuid4
 
 from proton import ConnectionException, Message
@@ -88,6 +89,10 @@ class Shard(XqaMessagingHandler):
                      event.message.reply_to,
                      event.message.expiry_time,
                      hashlib.sha256(event.message.body).hexdigest())
+
+        if os.getenv('XQA_WRITE_FILE', default=None) == '1':
+            with open('/tmp/xqa.%s.%s' % (event.message.correlation_id, hashlib.sha256(event.message.body).hexdigest()), 'w') as f:
+                f.write(event.message.body.decode('utf-8'))
 
         self._storage_service.storage_insert(event.message.body.decode('utf-8'),
                                              event.message.correlation_id,

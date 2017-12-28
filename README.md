@@ -22,3 +22,6 @@ or
 
 ### 2.4. Teardown
 * docker-compose -p "dev" down --rmi all -v
+
+## 3. Debug inserts into /tmp
+$ XQA_WRITE_FILE=1 python src/xqa/shard.py
