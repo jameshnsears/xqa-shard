@@ -89,7 +89,9 @@ class Shard(XqaMessagingHandler):
                      event.message.expiry_time,
                      hashlib.sha256(event.message.body).hexdigest())
 
-        self._storage_service.storage_insert(event.message.body.decode('utf-8'))
+        self._storage_service.storage_insert(event.message.body.decode('utf-8'),
+                                             event.message.correlation_id,
+                                             hashlib.sha256(event.message.body).hexdigest())
 
     def _xquery(self, event):
         logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s; body=%s',
