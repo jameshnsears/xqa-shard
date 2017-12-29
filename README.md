@@ -23,5 +23,5 @@ or
 ### 2.4. Teardown
 * docker-compose -p "dev" down --rmi all -v
 
-## 3. Debug inserts into /tmp
-$ XQA_WRITE_FOLDER=/tmp python src/xqa/shard.py
+## 3. Trace inserts into /tmp (if running shard from cmd line, not container)
+* XQA_WRITE_FOLDER=$HOME/tmp python src/xqa/shard.py > $HOME/tmp/xqa-shard-1.log
