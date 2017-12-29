@@ -64,7 +64,7 @@ class StorageService:
         self._session.add(configuration.storage_database_name, xml)
         process = psutil.Process(os.getpid())
         mem = process.memory_percent()
-        logging.info('correlation_id=%s; sha256=%s; size=%d; memory_percent=%f' % (correlation_id, sha256, self.storage_size(), mem))
+        logging.info('{"correlation_id":"%s", "sha256":"%s", "size":"%d", "memory_percent":"%f"}' % (correlation_id, sha256, self.storage_size(), mem))
 
     def storage_size(self):
         return int(self._session.execute('xquery count(/)'))

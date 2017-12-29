@@ -55,13 +55,12 @@ class Shard(XqaMessagingHandler):
             return
 
     def _size(self, event):
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s',
+        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s',
                      '>',
                      event.message.creation_time,
                      event.message.correlation_id,
                      event.message.address,
-                     event.message.reply_to,
-                     event.message.expiry_time)
+                     event.message.reply_to)
 
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
@@ -69,29 +68,27 @@ class Shard(XqaMessagingHandler):
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           body=self._storage_service.storage_size())
 
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s, body=%s',
+        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                      '<',
                      message.creation_time,
                      message.correlation_id,
                      message.address,
                      message.reply_to,
-                     message.expiry_time,
                      message.body)
 
         self.size_sender.send(message)
 
     def _insert(self, event):
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s; sha256(body)=%s',
+        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; sha256(body)=%s',
                      '>',
                      event.message.creation_time,
                      event.message.correlation_id,
                      event.message.address,
                      event.message.reply_to,
-                     event.message.expiry_time,
                      hashlib.sha256(event.message.body).hexdigest())
 
-        if os.getenv('XQA_WRITE_FILE', default=None) == '1':
-            with open('/tmp/xqa.%s.%s' % (event.message.correlation_id, hashlib.sha256(event.message.body).hexdigest()), 'w') as f:
+        if os.getenv('XQA_WRITE_FOLDER', default=None):
+            with open('%s/%s.%s' % (os.getenv('XQA_WRITE_FOLDER'), event.message.correlation_id, hashlib.sha256(event.message.body).hexdigest()), 'w') as f:
                 f.write(event.message.body.decode('utf-8'))
 
         self._storage_service.storage_insert(event.message.body.decode('utf-8'),
@@ -99,13 +96,12 @@ class Shard(XqaMessagingHandler):
                                              hashlib.sha256(event.message.body).hexdigest())
 
     def _xquery(self, event):
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s; body=%s',
+        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                      '>',
                      event.message.creation_time,
                      event.message.correlation_id,
                      event.message.address,
                      event.message.reply_to,
-                     event.message.expiry_time,
                      event.message.body)
 
         message = Message(address=event.message.reply_to,
@@ -113,13 +109,12 @@ class Shard(XqaMessagingHandler):
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           body=self._storage_service.storage_xquery(event.message.body))
 
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s, body=%s',
+        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                      '<',
                      message.creation_time,
                      message.correlation_id,
                      message.address,
                      message.reply_to,
-                     message.expiry_time,
                      message.body)
 
         self.xquery_sender.send(message)
