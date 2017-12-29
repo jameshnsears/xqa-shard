@@ -124,7 +124,7 @@ class IngestBalancerTest(XqaMessagingHandler):
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           reply_to=self.shard_xquery_receiver.remote_source.address,
-                          body='/a/text()')
+                          body='/copyrightStatement/text()')
 
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s; body=%s',
                      "<",
@@ -147,7 +147,7 @@ class IngestBalancerTest(XqaMessagingHandler):
                      event.message.expiry_time,
                      event.message.body)
 
-        assert event.message.body == 'b'
+        assert event.message.body == '© Bodleian Libraries, University of Oxford'
 
         self._xquery_test_response_received = True
 
@@ -164,7 +164,7 @@ class IngestBalancerTest(XqaMessagingHandler):
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
-                          body='<a>b</a>'.encode('utf-8'))
+                          body='<copyrightStatement>© Bodleian Libraries, University of Oxford</copyrightStatement>'.encode('UTF-8'))
 
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s; sha256(body)=%s',
                      "<",
