@@ -33,9 +33,9 @@ script:
   - cat shard.log
   - cat shard_test.log
 
-  - grep "sha256=f1bcf55ede4b89962b411213bcbd1918f3e1659d786c1aff20fd5bd89fbcae70" shard.log
+  - grep "sha256=bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard.log
 
-  - grep "sha256(body)=f1bcf55ede4b89962b411213bcbd1918f3e1659d786c1aff20fd5bd89fbcae70" shard_test.log
+  - grep "sha256(body)=bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard_test.log
   - grep "xquery_response" shard_test.log | grep "body=b"
 
 
