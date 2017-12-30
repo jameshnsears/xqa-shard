@@ -8,7 +8,7 @@
 
 ## 2. Docker
 ### 2.1. Build locally
-* docker-compose -p "dev" build --rm
+* docker-compose -p "dev" build --force-rm
 
 ### 2.2. Bring up
 * docker-compose -p "dev" up -d  # single instance
