@@ -33,10 +33,10 @@ script:
   - cat shard.log
   - cat shard_test.log
 
-  - grep "sha256=bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard.log
+  - grep "bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard.log
 
-  - grep "sha256(body)=bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard_test.log
-  - grep "xquery_response" shard_test.log | grep "body=b"
+  - grep "bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard_test.log
+  - grep "© Bodleian Libraries, University of Oxford" shard_test.log
 
 
   - mkdir coverage
