@@ -1,7 +1,8 @@
-__pycache__/
-coverage/
 .cache/
 .coverage
+coverage/
 .idea/
+__pycache__/
 .pydevproject
+.pytest_cache/
 .vscode/

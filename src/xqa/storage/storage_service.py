@@ -1,4 +1,3 @@
-import hashlib
 import logging
 import os
 import signal
@@ -60,11 +59,12 @@ class StorageService:
         logging.debug('OPEN %s' % configuration.storage_database_name)
         self._session.execute('OPEN %s' % configuration.storage_database_name)
 
-    def storage_insert(self, xml, correlation_id, sha256):
-        self._session.add(configuration.storage_database_name, xml)
+    def storage_add(self, xml, correlation_id, subject, digest):
+        self._session.add(subject, xml)
         process = psutil.Process(os.getpid())
         mem = process.memory_percent()
-        logging.info('{"correlation_id":"%s", "sha256":"%s", "size":"%d", "memory_percent":"%f"}' % (correlation_id, sha256, self.storage_size(), mem))
+        logging.info('correlation_id=%s; subject=%s; digest=%s; size=%d; memory_percent=%f' % (
+            correlation_id, subject, digest, self.storage_size(), mem))
 
     def storage_size(self):
         return int(self._session.execute('xquery count(/)'))

@@ -1,7 +1,27 @@
 version: '3'
 
 services:
+  xqa-message-broker:
+    image: jameshnsears/xqa-message-broker:latest
+    ports:
+      - "5672:5672"
+      - "8161:8161"
+    volumes:
+      - "xqa-message-broker:/opt/apache-activemq-5.15.3/data"
+    networks:
+      - xqa
+
   xqa-shard:
     build: .
     image: "xqa-shard"
-    network_mode: "host"
+    command: ["-message_broker_host", "xqa-message-broker"]
+    depends_on:
+      - xqa-message-broker
+    networks:
+      - xqa
+
+volumes:
+  xqa-message-broker:
+
+networks:
+  xqa:

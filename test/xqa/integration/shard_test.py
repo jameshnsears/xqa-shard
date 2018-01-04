@@ -12,7 +12,7 @@ from xqa.commons.xqa_messaging_handler import XqaMessagingHandler
 
 class IngestBalancerTest(XqaMessagingHandler):
     def __init__(self):
-        MessagingHandler.__init__(self)
+        XqaMessagingHandler.__init__(self)
         logging.info(self.__class__.__name__)
         self._stopping = False
 
@@ -24,7 +24,11 @@ class IngestBalancerTest(XqaMessagingHandler):
         self._test_xquery_correlation_id = None
 
     def on_start(self, event):
-        connection = event.container.connect(configuration.url_amqp)
+        message_broker_url = 'amqp://%s:%s@%s:%s/' % (configuration.message_broker_user,
+                                                      configuration.message_broker_password,
+                                                      configuration.message_broker_host,
+                                                      configuration.message_broker_port)
+        connection = event.container.connect(message_broker_url)
 
         self.cmd_test_size_sender = event.container.create_sender(connection, self._queue_cmd_test_size)
         self.cmd_test_size_receiver = event.container.create_receiver(connection, self._queue_cmd_test_size)
@@ -32,16 +36,19 @@ class IngestBalancerTest(XqaMessagingHandler):
         self.cmd_test_xquery_sender = event.container.create_sender(connection, self._queue_cmd_test_xquery)
         self.cmd_test_xquery_receiver = event.container.create_receiver(connection, self._queue_cmd_test_xquery)
 
-        self.shard_size_sender = event.container.create_sender(connection, configuration.topic_shard_size)
+        self.shard_size_sender = event.container.create_sender(connection,
+                                                               configuration.message_broker_topic_shard_size)
         self.shard_size_receiver = event.container.create_receiver(self.shard_size_sender.connection, None,
                                                                    dynamic=True)
 
-        self.shard_xquery_sender = event.container.create_sender(connection, configuration.topic_shard_xquery)
+        self.shard_xquery_sender = event.container.create_sender(connection,
+                                                                 configuration.message_broker_topic_shard_xquery)
         self.shard_xquery_receiver = event.container.create_receiver(self.shard_xquery_sender.connection, None,
                                                                      dynamic=True)
 
-        self.cmd_stop_sender = event.container.create_sender(connection, configuration.topic_cmd_stop)
-        self.cmd_stop_receiver = event.container.create_receiver(connection, configuration.topic_cmd_stop)
+        self.cmd_stop_sender = event.container.create_sender(connection, configuration.message_broker_topic_cmd_stop)
+        self.cmd_stop_receiver = event.container.create_receiver(connection,
+                                                                 configuration.message_broker_topic_cmd_stop)
 
         self.container = event.reactor
         self.container.schedule(1, self)
@@ -72,7 +79,7 @@ class IngestBalancerTest(XqaMessagingHandler):
         self.container.schedule(1, self)
 
     def _size(self, event):
-        message = Message(address=configuration.topic_shard_size,
+        message = Message(address=configuration.message_broker_topic_shard_size,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           reply_to=self.shard_size_receiver.remote_source.address)
@@ -111,16 +118,16 @@ class IngestBalancerTest(XqaMessagingHandler):
             self._size(event)
             return
 
-        if event.message.reply_to and configuration.queue_shard_insert_uuid in event.message.reply_to:
+        if event.message.reply_to and configuration.message_broker_queue_shard_insert_uuid in event.message.reply_to:
             self._insert(event)
             return
 
-        if configuration.topic_cmd_stop in event.message.address:
+        if configuration.message_broker_topic_cmd_stop in event.message.address:
             self._cmd_stop(event)
             return
 
     def _xquery(self, event):
-        message = Message(address=configuration.topic_shard_xquery,
+        message = Message(address=configuration.message_broker_topic_shard_xquery,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           reply_to=self.shard_xquery_receiver.remote_source.address,
@@ -164,23 +171,27 @@ class IngestBalancerTest(XqaMessagingHandler):
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
-                          body='<copyrightStatement>© Bodleian Libraries, University of Oxford</copyrightStatement>'.encode('UTF-8'))
+                          subject='a/b/c.xml',
+                          body='<copyrightStatement>© Bodleian Libraries, University of Oxford</copyrightStatement>'.encode(
+                              'UTF-8'))
 
-        logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; expiry_time=%s; sha256(body)=%s',
-                     "<",
-                     message.creation_time,
-                     message.correlation_id,
-                     message.address,
-                     message.reply_to,
-                     message.expiry_time,
-                     hashlib.sha256(message.body).hexdigest())
+        logging.info(
+            '%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; subject=%s; expiry_time=%s; digest(body)=%s',
+            "<",
+            message.creation_time,
+            message.correlation_id,
+            message.address,
+            message.reply_to,
+            message.subject,
+            message.expiry_time,
+            hashlib.sha256(message.body).hexdigest())
 
         self.shard_size_sender.send(message)
 
         self._size_test_response_received = True
 
     def _send_cmd_stop(self):
-        message = Message(address=configuration.topic_cmd_stop,
+        message = Message(address=configuration.message_broker_topic_cmd_stop,
                           correlation_id=str(uuid4()),
                           creation_time=XqaMessagingHandler.now_timestamp_seconds())
 
@@ -196,6 +207,7 @@ class IngestBalancerTest(XqaMessagingHandler):
 
 
 if __name__ == "__main__":
+    # this 'test' is meant to be run after shard.py is started - as per .travis.yml
     try:
         Container(IngestBalancerTest()).run()
     except (ConnectionException, KeyboardInterrupt):

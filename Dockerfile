@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:stretch
 
 MAINTAINER james.hn.sears@gmail.com
 
@@ -12,6 +12,8 @@ ENV LANG en_GB.UTF-8
 ENV LANGUAGE en_GB
 ENV LC_ALL en_GB.UTF-8
 RUN dpkg-reconfigure --frontend noninteractive locales
+
+EXPOSE 1984
 
 ARG OPTDIR=/opt/
 ARG XQA=xqa-shard
@@ -34,4 +36,4 @@ RUN pip3 install -r requirements.txt
 
 ENV PYTHONPATH=${OPTDIR}/${XQA}
 
-CMD ["/bin/sh", "-c", "python3 xqa/shard.py"]
+ENTRYPOINT ["python3", "xqa/shard.py"]
