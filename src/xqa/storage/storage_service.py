@@ -10,10 +10,9 @@ from xqa.commons import configuration
 
 
 class StorageService:
-    BASEX_JAR = 'BaseX90.jar'
-
-    def __init__(self, cp=os.path.join(os.path.dirname(__file__), BASEX_JAR)):
+    def __init__(self, cp=os.path.join(os.path.dirname(__file__), basex_jar='BaseX90.jar')):
         self._cp = cp
+        self._basex_jar = basex_jar
         self._kill_any_prior_process()
         self._server_create()
         self._session_open()
@@ -23,7 +22,7 @@ class StorageService:
     def _kill_any_prior_process(self):
         for process in psutil.process_iter():
             for arg in process.cmdline():
-                if BASEX_JAR in arg:
+                if self._basex_jar in arg:
                     process.kill()
                     return
 
