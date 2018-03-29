@@ -9,10 +9,13 @@ from org.basex.examples.api import BaseXClient
 from xqa.commons import configuration
 
 
+BASEX_JAR = 'BaseX90.jar'
+
+
 class StorageService:
-    def __init__(self, cp=os.path.join(os.path.dirname(__file__), basex_jar='BaseX90.jar')):
+    def __init__(self, cp=os.path.join(os.path.dirname(__file__), BASEX_JAR)):
         self._cp = cp
-        self._basex_jar = basex_jar
+        self._basex_jar = BASEX_JAR
         self._kill_any_prior_process()
         self._server_create()
         self._session_open()
