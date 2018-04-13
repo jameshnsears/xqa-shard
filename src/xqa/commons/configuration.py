@@ -10,7 +10,7 @@ message_broker_topic_cmd_stop = 'topic://xqa.cmd.stop'
 message_broker_topic_shard_size = 'topic://xqa.shard.size'
 message_broker_queue_shard_insert_uuid = 'queue://xqa.shard.insert'
 message_broker_topic_shard_xquery = 'topic://xqa.shard.xquery'
-message_broker_queue_db_amqp_insert_event = 'queue://xqa.db.amqp.insert_event'
+message_broker_queue_db_amqp_insert_event = 'queue://xqa.event'
 
 storage_host = '127.0.0.1'
 storage_port = 1984
