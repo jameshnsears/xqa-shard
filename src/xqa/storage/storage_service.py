@@ -67,7 +67,7 @@ class StorageService:
         self._session.add(subject, xml)
         process = psutil.Process(os.getpid())
         mem = process.memory_percent()
-        logging.info('correlation_id=%s; subject=%s; digest=%s; size=%d; memory_percent=%f' % (
+        logging.debug('correlation_id=%s; subject=%s; digest=%s; size=%d; memory_percent=%f' % (
             correlation_id, subject, digest, self.storage_size(), mem))
 
     def storage_size(self):
