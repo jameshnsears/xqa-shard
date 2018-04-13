@@ -207,7 +207,7 @@ class IngestBalancerTest(XqaMessagingHandler):
 
 
 if __name__ == "__main__":
-    # this 'test' is meant to be run after shard.py is started - as per .travis.yml
+    print("this 'test' is meant to be run after shard.py -message_broker_host 127.0.0.1 is started - as per .travis.yml")
     try:
         Container(IngestBalancerTest()).run()
     except (ConnectionException, KeyboardInterrupt):
