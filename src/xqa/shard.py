@@ -69,7 +69,7 @@ class Shard(XqaMessagingHandler):
             return
 
     def _size(self, event):
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s',
+        logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s',
                       '>',
                       event.message.creation_time,
                       event.message.correlation_id,
@@ -93,7 +93,7 @@ class Shard(XqaMessagingHandler):
         self.size_sender.send(message)
 
     def _insert(self, event):
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; subject=%s; digest(body)=%s',
+        logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; subject=%s; digest(body)=%s',
                       '>',
                       event.message.creation_time,
                       event.message.correlation_id,
@@ -137,7 +137,7 @@ class Shard(XqaMessagingHandler):
         return creation_time.ljust(9, '0')[:13]
 
     def _xquery(self, event):
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
+        logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                       '>',
                       event.message.creation_time,
                       event.message.correlation_id,
