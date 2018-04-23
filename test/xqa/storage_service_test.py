@@ -1,6 +1,5 @@
 import hashlib
 import os
-from uuid import uuid4
 
 from xqa.storage.storage_service import StorageService
 
