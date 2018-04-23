@@ -147,6 +147,7 @@ class Shard(XqaMessagingHandler):
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
+
                           body=self._storage_service.storage_xquery(event.message.body))
 
         logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
@@ -166,8 +167,7 @@ class Shard(XqaMessagingHandler):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-message_broker_host', '--message_broker_host', required=True,
-                        help='i.e. xqa-message-broker')
+    parser.add_argument('-message_broker_host', '--message_broker_host', required=True, help='i.e. xqa-message-broker')
     args = parser.parse_args()
     configuration.message_broker_host = args.message_broker_host
 

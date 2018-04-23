@@ -11,14 +11,23 @@ def test_storage_service():
         xml_in = open(xml_file, encoding='utf-8').read()
         storage_service.storage_add(xml_in, xml_file)
 
-        assert 1 == storage_service.storage_size()
+        assert storage_service.storage_size() == 1
 
-        assert 'contentType=\"monograph\"' == storage_service.storage_xquery('/book/@contentType')
+        assert storage_service.storage_xquery('/book/@contentType') == 'contentType=\"monograph\"'
 
         xml_out = storage_service.storage_xquery("/")
         assert hashlib.sha256(xml_out.encode('utf-8')).hexdigest() == hashlib.sha256(xml_in.encode('utf-8')).hexdigest()
     except AssertionError as e:
         open(xml_file, 'w').write(xml_out)
         raise e
+    finally:
+        storage_service.storage_terminate()
+
+
+def test_invalid_xquery_syntax():
+    try:
+        storage_service = StorageService()
+        assert storage_service.storage_xquery('blah') == StorageService.INVALID_XQUERY_SYNTAX
+        assert storage_service.storage_xquery("'XQueryRequest('count(/)'") == StorageService.INVALID_XQUERY_SYNTAX_XPST0003
     finally:
         storage_service.storage_terminate()

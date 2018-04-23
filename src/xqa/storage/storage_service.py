@@ -13,6 +13,9 @@ BASEX_JAR = 'BaseX90.jar'
 
 
 class StorageService:
+    INVALID_XQUERY_SYNTAX = 'Invalid XQuery Syntax'
+    INVALID_XQUERY_SYNTAX_XPST0003 = 'Invalid XQuery Syntax - XPST0003'
+
     def __init__(self, cp=os.path.join(os.path.dirname(__file__), BASEX_JAR)):
         self._cp = cp
         self._basex_jar = BASEX_JAR
@@ -77,4 +80,11 @@ class StorageService:
 
     def storage_xquery(self, xquery):
         logging.info('xquery=%s' % xquery)
-        return self._session.execute('xquery %s' % xquery)
+        try:
+            xquery_response = self._session.execute('xquery %s' % xquery)
+            if xquery_response == "":
+                return StorageService.INVALID_XQUERY_SYNTAX
+            return xquery_response
+        except Exception as e:
+            logging.warning(e)
+            return StorageService.INVALID_XQUERY_SYNTAX_XPST0003
