@@ -1,3 +1,4 @@
+
 import argparse
 import hashlib
 import logging
@@ -109,9 +110,7 @@ class Shard(XqaMessagingHandler):
 
         self._insert_event(event.message, "START")
         self._storage_service.storage_add(event.message.body.decode('utf-8'),
-                                          event.message.correlation_id,
-                                          event.message.subject,
-                                          hashlib.sha256(event.message.body).hexdigest())
+                                          event.message.subject)
         self._insert_event(event.message, "END")
 
     def _insert_event(self, message, state):

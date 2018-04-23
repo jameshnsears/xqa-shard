@@ -10,8 +10,7 @@ def test_storage_service():
         storage_service = StorageService()
         xml_file = os.path.join(os.path.dirname(__file__), '../resources/test-data/eapb_mon_14501A_033.xml')
         xml_in = open(xml_file, encoding='utf-8').read()
-        storage_service.storage_add(xml_in, str(uuid4()), xml_file,
-                                    hashlib.sha256(xml_in.encode('utf-8')).hexdigest())
+        storage_service.storage_add(xml_in, xml_file)
 
         assert 1 == storage_service.storage_size()
 

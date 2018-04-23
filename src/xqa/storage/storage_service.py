@@ -26,7 +26,10 @@ class StorageService:
         for process in psutil.process_iter():
             for arg in process.cmdline():
                 if self._basex_jar in arg:
-                    process.kill()
+                    try:
+                        process.kill()
+                    except Exception as e:
+                        logging.warning(e)
                     return
 
     def _server_create(self):
@@ -63,12 +66,11 @@ class StorageService:
         logging.debug('OPEN %s' % configuration.storage_database_name)
         self._session.execute('OPEN %s' % configuration.storage_database_name)
 
-    def storage_add(self, xml, correlation_id, subject, digest):
+    def storage_add(self, xml, subject):
         self._session.add(subject, xml)
         process = psutil.Process(os.getpid())
         mem = process.memory_percent()
-        logging.debug('correlation_id=%s; subject=%s; digest=%s; size=%d; memory_percent=%f' % (
-            correlation_id, subject, digest, self.storage_size(), mem))
+        logging.info('size=%d; memory_percent=%f' % (self.storage_size(), mem))
 
     def storage_size(self):
         return int(self._session.execute('xquery count(/)'))
