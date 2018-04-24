@@ -83,7 +83,7 @@ class Shard(XqaMessagingHandler):
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
                           body=self._storage_service.storage_size())
 
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
+        logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                       '<',
                       message.creation_time,
                       message.correlation_id,
@@ -147,10 +147,9 @@ class Shard(XqaMessagingHandler):
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
+                          body=self._storage_service.storage_xquery(event.message.body.decode('utf-8')))
 
-                          body=self._storage_service.storage_xquery(event.message.body))
-
-        logging.debug('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
+        logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                       '<',
                       message.creation_time,
                       message.correlation_id,

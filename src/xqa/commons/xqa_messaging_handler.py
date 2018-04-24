@@ -28,5 +28,6 @@ class XqaMessagingHandler(MessagingHandler):
     def on_transport_error(self, event):
         self.retry_attempts += 1
         if self.retry_attempts == 10:
+            logging.error('Unable to connect to message_broker_host')
             raise ConnectionException(event.transport.condition.description)
         super()
