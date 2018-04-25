@@ -109,8 +109,9 @@ class Shard(XqaMessagingHandler):
                 f.write(event.message.body.decode('utf-8'))
 
         self._insert_event(event.message, "START")
-        self._storage_service.storage_add(event.message.body.decode('utf-8'),
-                                          event.message.subject)
+        try:
+            self._storage_service.storage_add(event.message.body.decode('utf-8'), event.message.subject)
+        except
         self._insert_event(event.message, "END")
 
     def _insert_event(self, message, state):
