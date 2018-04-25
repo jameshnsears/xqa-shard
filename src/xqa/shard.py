@@ -111,7 +111,9 @@ class Shard(XqaMessagingHandler):
         self._insert_event(event.message, "START")
         try:
             self._storage_service.storage_add(event.message.body.decode('utf-8'), event.message.subject)
-        except
+        except AttributeError:
+            self._storage_service.storage_add(event.message.body, event.message.subject)
+
         self._insert_event(event.message, "END")
 
     def _insert_event(self, message, state):
@@ -145,10 +147,15 @@ class Shard(XqaMessagingHandler):
                       event.message.reply_to,
                       event.message.body)
 
+        try:
+            body = self._storage_service.storage_xquery(event.message.body.decode('utf-8'))
+        except AttributeError:
+            body = self._storage_service.storage_xquery(event.message.body)
+
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
-                          body=self._storage_service.storage_xquery(event.message.body.decode('utf-8')))
+                          body=body)
 
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                       '<',
