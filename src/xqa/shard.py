@@ -145,7 +145,7 @@ class Shard(XqaMessagingHandler):
                      event.message.correlation_id,
                      event.message.address,
                      event.message.reply_to,
-                     event.message.body.replace('\n', ''))
+                     event.message.body)
 
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
@@ -158,7 +158,7 @@ class Shard(XqaMessagingHandler):
                      message.correlation_id,
                      message.address,
                      message.reply_to,
-                     message.body.replace('\n', ''))
+                     message.body)
 
         self.xquery_sender.send(message)
 
