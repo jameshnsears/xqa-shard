@@ -154,7 +154,7 @@ class IngestBalancerTest(XqaMessagingHandler):
                      event.message.expiry_time,
                      event.message.body)
 
-        assert event.message.body == '© Bodleian Libraries, University of Oxford'
+        assert '© Bodleian Libraries, University of Oxford' in event.message.body
 
         self._xquery_test_response_received = True
 

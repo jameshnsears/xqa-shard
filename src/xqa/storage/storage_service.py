@@ -79,7 +79,7 @@ class StorageService:
         return int(self._session.execute('xquery count(/)'))
 
     def storage_xquery(self, xquery):
-        logging.info('xquery=%s' % xquery)
+        logging.debug('xquery=%s' % xquery)
         try:
             xquery_response = self._session.execute('xquery %s' % xquery)
             if xquery_response == "":

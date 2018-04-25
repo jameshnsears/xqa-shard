@@ -19,9 +19,9 @@ class Shard(XqaMessagingHandler):
         XqaMessagingHandler.__init__(self)
         MessagingHandler.__init__(self)
         self._stopping = False
-        uuid = str(uuid4()).split('-')[0]
-        self._service_id = '%s/%s' % (self.__class__.__name__.lower(), uuid)
-        self._insert_uuid = '%s.%s' % (configuration.message_broker_queue_shard_insert_uuid, uuid)
+        self._uuid = str(uuid4()).split('-')[0]
+        self._service_id = '%s/%s' % (self.__class__.__name__.lower(), self._uuid)
+        self._insert_uuid = '%s.%s' % (configuration.message_broker_queue_shard_insert_uuid, self._uuid)
 
         logging.info(self._service_id)
         logging.debug('-message_broker_host=%s' % configuration.message_broker_host)
@@ -145,17 +145,12 @@ class Shard(XqaMessagingHandler):
                       event.message.correlation_id,
                       event.message.address,
                       event.message.reply_to,
-                      event.message.body)
-
-        try:
-            body = self._storage_service.storage_xquery(event.message.body.decode('utf-8'))
-        except AttributeError:
-            body = self._storage_service.storage_xquery(event.message.body)
+                      event.message.body.replace('\n', ''))
 
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
                           creation_time=XqaMessagingHandler.now_timestamp_seconds(),
-                          body=body)
+                          body=(self.xquery_body(event)))
 
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
                       '<',
@@ -163,9 +158,17 @@ class Shard(XqaMessagingHandler):
                       message.correlation_id,
                       message.address,
                       message.reply_to,
-                      message.body)
+                      message.body.replace('\n', ''))
 
         self.xquery_sender.send(message)
+
+    def xquery_body(self, event):
+        try:
+            body = self._storage_service.storage_xquery(event.message.body.decode('utf-8'))
+        except AttributeError:
+            body = self._storage_service.storage_xquery(event.message.body)
+
+        return "<shard id='%s'>\n" % self._uuid + body + "\n</shard>"
 
     def _cmd_stop(self, event):
         self._storage_service.storage_terminate()
