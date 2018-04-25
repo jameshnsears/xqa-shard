@@ -1,4 +1,3 @@
-
 import argparse
 import hashlib
 import logging
@@ -71,11 +70,11 @@ class Shard(XqaMessagingHandler):
 
     def _size(self, event):
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s',
-                      '>',
-                      event.message.creation_time,
-                      event.message.correlation_id,
-                      event.message.address,
-                      event.message.reply_to)
+                     '>',
+                     event.message.creation_time,
+                     event.message.correlation_id,
+                     event.message.address,
+                     event.message.reply_to)
 
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
@@ -84,26 +83,26 @@ class Shard(XqaMessagingHandler):
                           body=self._storage_service.storage_size())
 
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
-                      '<',
-                      message.creation_time,
-                      message.correlation_id,
-                      message.address,
-                      message.reply_to,
-                      message.body)
+                     '<',
+                     message.creation_time,
+                     message.correlation_id,
+                     message.address,
+                     message.reply_to,
+                     message.body)
 
         self.size_sender.send(message)
 
     def _insert(self, event):
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; subject=%s; digest(body)=%s',
-                      '>',
-                      event.message.creation_time,
-                      event.message.correlation_id,
-                      event.message.address,
-                      event.message.reply_to,
-                      event.message.subject,
-                      hashlib.sha256(event.message.body).hexdigest())
+                     '>',
+                     event.message.creation_time,
+                     event.message.correlation_id,
+                     event.message.address,
+                     event.message.reply_to,
+                     event.message.subject,
+                     hashlib.sha256(event.message.body).hexdigest())
 
-        if os.getenv('XQA_WRITE_FOLDER', default=None):
+        if os.getenv('XQA_WRITE_FOLDER'):
             with open('%s/%s.%s' % (os.getenv('XQA_WRITE_FOLDER'), event.message.correlation_id,
                                     hashlib.sha256(event.message.body).hexdigest()), 'w') as f:
                 f.write(event.message.body.decode('utf-8'))
@@ -121,7 +120,7 @@ class Shard(XqaMessagingHandler):
 
         insert_event = """{ "serviceId": "%s", "creationTime": %s, "correlationId": "%s", "digest": "%s", "state": "%s" }""" % \
                        (self._service_id,
-                        self._standardise_creation_time_with_other_servics(creation_time),
+                        Shard.standardise_creation_time_with_other_servics(creation_time),
                         message.correlation_id,
                         hashlib.sha256(message.body).hexdigest(),
                         state)
@@ -133,19 +132,20 @@ class Shard(XqaMessagingHandler):
 
         self.insert_event_sender.send(message)
 
-    def _standardise_creation_time_with_other_servics(self, creation_time):
+    @staticmethod
+    def standardise_creation_time_with_other_servics(creation_time):
         if '.' in str(creation_time):
             creation_time = str(creation_time).replace('.', '')
         return creation_time.ljust(9, '0')[:13]
 
     def _xquery(self, event):
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
-                      '>',
-                      event.message.creation_time,
-                      event.message.correlation_id,
-                      event.message.address,
-                      event.message.reply_to,
-                      event.message.body.replace('\n', ''))
+                     '>',
+                     event.message.creation_time,
+                     event.message.correlation_id,
+                     event.message.address,
+                     event.message.reply_to,
+                     event.message.body.replace('\n', ''))
 
         message = Message(address=event.message.reply_to,
                           correlation_id=event.message.correlation_id,
@@ -153,12 +153,12 @@ class Shard(XqaMessagingHandler):
                           body=(self.xquery_body(event)))
 
         logging.info('%s creation_time=%s; correlation_id=%s; address=%s; reply_to=%s; body=%s',
-                      '<',
-                      message.creation_time,
-                      message.correlation_id,
-                      message.address,
-                      message.reply_to,
-                      message.body.replace('\n', ''))
+                     '<',
+                     message.creation_time,
+                     message.correlation_id,
+                     message.address,
+                     message.reply_to,
+                     message.body.replace('\n', ''))
 
         self.xquery_sender.send(message)
 

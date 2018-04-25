@@ -3,7 +3,6 @@ import logging
 from uuid import uuid4
 
 from proton import ConnectionException, Message
-from proton.handlers import MessagingHandler
 from proton.reactor import Container
 
 from xqa.commons import configuration

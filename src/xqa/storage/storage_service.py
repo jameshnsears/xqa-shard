@@ -8,7 +8,6 @@ import psutil
 from org.basex.examples.api import BaseXClient
 from xqa.commons import configuration
 
-
 BASEX_JAR = 'BaseX90.jar'
 
 
@@ -72,8 +71,7 @@ class StorageService:
     def storage_add(self, xml, subject):
         self._session.add(subject, xml)
         process = psutil.Process(os.getpid())
-        mem = process.memory_percent()
-        logging.info('size=%d; memory_percent=%f' % (self.storage_size(), mem))
+        logging.info('size=%d; memory_percent=%f' % (self.storage_size(), process.memory_percent()))
 
     def storage_size(self):
         return int(self._session.execute('xquery count(/)'))
