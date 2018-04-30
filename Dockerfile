@@ -26,6 +26,8 @@ RUN apt-get -qq install -y python3-pip gcc cmake-curses-gui uuid-dev libssl-dev 
 RUN useradd -r -M -d ${OPTDIR}${XQA} xqa
 RUN chown -R xqa:xqa ${OPTDIR}${XQA}
 
+EXPOSE 1984
+
 USER xqa
 
 WORKDIR ${OPTDIR}${XQA}
