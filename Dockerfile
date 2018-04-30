@@ -13,8 +13,6 @@ ENV LANGUAGE en_GB
 ENV LC_ALL en_GB.UTF-8
 RUN dpkg-reconfigure --frontend noninteractive locales
 
-EXPOSE 1984
-
 ARG OPTDIR=/opt/
 ARG XQA=xqa-shard
 
