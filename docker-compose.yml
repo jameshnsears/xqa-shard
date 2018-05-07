@@ -15,6 +15,8 @@ services:
     build: .
     image: "xqa-shard"
     command: ["-message_broker_host", "xqa-message-broker"]
+    ports:
+      - 1984
     depends_on:
       - xqa-message-broker
     networks:
