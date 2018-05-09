@@ -2,6 +2,7 @@ import logging
 import os
 import signal
 from subprocess import Popen, PIPE
+from time import sleep
 
 import psutil
 
@@ -51,10 +52,20 @@ class StorageService:
             logging.error(e)
 
     def _session_open(self):
-        self._session = BaseXClient.Session(configuration.storage_host,
-                                            configuration.storage_port,
-                                            configuration.storage_user,
-                                            configuration.storage_password)
+        retry_attempts = 0
+        connected = False
+        while not connected:
+            try:
+                self._session = BaseXClient.Session(configuration.storage_host,
+                                                    configuration.storage_port,
+                                                    configuration.storage_user,
+                                                    configuration.storage_password)
+                connected = True
+            except ConnectionRefusedError as e:
+                retry_attempts += 1
+                sleep(retry_attempts)
+                if retry_attempts == 10:
+                    raise e
 
     def _database_create(self):
         logging.debug('CREATE DB %s' % configuration.storage_database_name)
