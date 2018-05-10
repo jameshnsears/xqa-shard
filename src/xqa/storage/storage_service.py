@@ -52,7 +52,8 @@ class StorageService:
             logging.error(e)
 
     def _session_open(self):
-        retry_attempts = 0
+        max_retry_attempts = 10
+        retry_attempts = 1
         connected = False
         while not connected:
             try:
@@ -62,10 +63,11 @@ class StorageService:
                                                     configuration.storage_password)
                 connected = True
             except ConnectionRefusedError as e:
+                logging.info('ConnectionRefusedError: %s/%s' % (retry_attempts, max_retry_attempts))
+                if retry_attempts == max_retry_attempts:
+                    raise e
                 retry_attempts += 1
                 sleep(retry_attempts)
-                if retry_attempts == 10:
-                    raise e
 
     def _database_create(self):
         logging.debug('CREATE DB %s' % configuration.storage_database_name)
