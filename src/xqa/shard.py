@@ -118,11 +118,12 @@ class Shard(XqaMessagingHandler):
     def _insert_event(self, message, state):
         creation_time = XqaMessagingHandler.now_timestamp_seconds()
 
-        insert_event = """{ "serviceId": "%s", "creationTime": %s, "correlationId": "%s", "digest": "%s", "state": "%s" }""" % \
+        insert_event = """{ "serviceId": "%s", "creationTime": %s, "correlationId": "%s", "digest": "%s", "storage_size": "%s" , "state": "%s" }""" % \
                        (self._service_id,
-                        Shard.standardise_creation_time_with_other_servics(creation_time),
+                        Shard.standardise_creation_time_with_other_services(creation_time),
                         message.correlation_id,
                         hashlib.sha256(message.body).hexdigest(),
+                        self._storage_service.storage_size(),
                         state)
 
         message = Message(address=configuration.message_broker_queue_db_amqp_insert_event,
@@ -133,7 +134,7 @@ class Shard(XqaMessagingHandler):
         self.insert_event_sender.send(message)
 
     @staticmethod
-    def standardise_creation_time_with_other_servics(creation_time):
+    def standardise_creation_time_with_other_services(creation_time):
         if '.' in str(creation_time):
             creation_time = str(creation_time).replace('.', '')
         return creation_time.ljust(9, '0')[:13]
