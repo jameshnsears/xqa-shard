@@ -1,9 +1,9 @@
-FROM debian:stretch
+FROM ubuntu:bionic
 
 MAINTAINER james.hn.sears@gmail.com
 
 RUN apt-get -qq update
-RUN apt-get -qq install -y openjdk-8-jre
+RUN apt-get -qq install -y openjdk-11-jre python3-pip python3-dev
 
 RUN apt-get install --reinstall -y locales
 RUN sed -i 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen
@@ -19,9 +19,6 @@ ARG XQA=xqa-shard
 RUN mkdir ${OPTDIR}/${XQA}
 COPY src ${OPTDIR}/${XQA}
 ADD requirements.txt ${OPTDIR}/${XQA}
-
-RUN apt-get -qq remove cmake
-RUN apt-get -qq install -y python3-pip gcc cmake-curses-gui uuid-dev libssl-dev libsasl2-2 libsasl2-dev swig python-dev python3-dev ruby-dev libperl-dev
 
 RUN useradd -r -M -d ${OPTDIR}${XQA} xqa
 RUN chown -R xqa:xqa ${OPTDIR}${XQA}
