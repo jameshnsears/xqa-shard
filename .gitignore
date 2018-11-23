@@ -1,8 +1,8 @@
-.cache/
 .coverage
-coverage/
-.idea/
-__pycache__/
-.pydevproject
-.pytest_cache/
-.vscode/
+build
+dist
+*.egg-info/
+/.idea/
+/.pytest_cache/
+/.vscode/
+/venv*/
