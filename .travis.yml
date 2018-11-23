@@ -8,34 +8,21 @@ services:
 
 language: python
 
+git:
+  depth: false
+
 python:
   - "3.6"
 
 before_install:
-  - docker-compose -p "dev" up -d xqa-message-broker
+  - docker-compose pull xqa-message-broker
 
   - pip install -r requirements.txt
+  - flake8 src test
 
 script:
-  - export PYTHONPATH=/home/travis/build/jameshnsears/xqa-shard/src:$PYTHONPATH
-  - coverage run --omit */site-packages/*,*/virtualenv/*,*/org/basex/* src/xqa/shard.py -message_broker_host 127.0.0.1 > shard.log &
-  - python test/xqa/integration/shard_test.py > shard_test.log
-
-  - cat shard.log
-  - cat shard_test.log
-
-  - grep "bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard.log
-
-  - grep "bc3b7037d4d0d1867eb0ec61b0b49f5d7d617e5b0ddfc4d80fb38f5dc03cc534" shard_test.log
-  - grep "© Bodleian Libraries, University of Oxford" shard_test.log
-
-  - mkdir coverage
-  - mv .coverage coverage/.coverage.0
-
-  - pytest --flake8 --cov-report term-missing --cov=. test/xqa/storage_service_test.py
-  - mv .coverage coverage/.coverage.1
-  - cd coverage
-  - coverage combine
+  - export PYTHONPATH=src:$PYTHONPATH
+  - pytest -s --cov-report term-missing --cov=.
 
 after_success:
   - COVERALLS_REPO_TOKEN=gNQsMIHlJD0YeTwwcdM1UVEh4lJxUV77t coveralls

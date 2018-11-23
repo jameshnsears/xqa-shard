@@ -20,7 +20,7 @@ class Shard(XqaMessagingHandler):
         self._stopping = False
         self._uuid = str(uuid4()).split('-')[0]
         self._service_id = '%s/%s' % (self.__class__.__name__.lower(), self._uuid)
-        self._insert_uuid = '%s.%s' % (configuration.message_broker_queue_shard_insert_uuid, self._uuid)
+        self._insert_uuid = '%s.%s' % (configuration.message_broker_shard_insert_uuid_queue, self._uuid)
 
         logging.info(self._service_id)
         logging.debug('-message_broker_host=%s' % configuration.message_broker_host)
@@ -31,28 +31,29 @@ class Shard(XqaMessagingHandler):
         message_broker_url = 'amqp://%s:%s@%s:%s/' % (configuration.message_broker_user,
                                                       configuration.message_broker_password,
                                                       configuration.message_broker_host,
-                                                      configuration.message_broker_port)
+                                                      configuration.message_broker_port_amqp)
         connection = event.container.connect(message_broker_url, reconnect=XqaMessagingHandler.XqaBackoff())
+        self.container = event.reactor
 
-        self.size_receiver = event.container.create_receiver(connection, configuration.message_broker_topic_shard_size)
+        self.size_receiver = event.container.create_receiver(connection, configuration.message_broker_shard_size_topic)
         self.size_sender = event.container.create_sender(connection, None)
 
         self.insert_uuid_receiver = event.container.create_receiver(connection, self._insert_uuid)
 
         self.xquery_receiver = event.container.create_receiver(connection,
-                                                               configuration.message_broker_topic_shard_xquery)
+                                                               configuration.message_broker_shard_xquery_topic)
         self.xquery_sender = event.container.create_sender(connection, None)
 
         self.cmd_stop_receiver = event.container.create_receiver(connection,
-                                                                 configuration.message_broker_topic_cmd_stop)
+                                                                 configuration.message_broker_cmd_stop_topic)
 
         self.insert_event_sender = event.container.create_sender(connection,
-                                                                 configuration.message_broker_queue_db_amqp_insert_event)
+                                                                 configuration.message_broker_db_amqp_insert_event_queue)
 
         logging.debug('receivers up')
 
     def on_message(self, event):
-        if configuration.message_broker_topic_shard_size in event.message.address:
+        if configuration.message_broker_shard_size_topic in event.message.address:
             self._size(event)
             return
 
@@ -60,11 +61,11 @@ class Shard(XqaMessagingHandler):
             self._insert(event)
             return
 
-        if configuration.message_broker_topic_shard_xquery in event.message.address:
+        if configuration.message_broker_shard_xquery_topic in event.message.address:
             self._xquery(event)
             return
 
-        if configuration.message_broker_topic_cmd_stop in event.message.address:
+        if configuration.message_broker_cmd_stop_topic in event.message.address:
             self._cmd_stop(event)
             return
 
@@ -126,7 +127,7 @@ class Shard(XqaMessagingHandler):
                         self._storage_service.storage_size(),
                         state)
 
-        message = Message(address=configuration.message_broker_queue_db_amqp_insert_event,
+        message = Message(address=configuration.message_broker_db_amqp_insert_event_queue,
                           correlation_id=str(uuid4()),
                           creation_time=creation_time,
                           body=insert_event.encode('utf-8'))

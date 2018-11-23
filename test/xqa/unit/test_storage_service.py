@@ -7,12 +7,12 @@ from xqa.storage.storage_service import StorageService
 def test_storage_service():
     try:
         storage_service = StorageService()
-        xml_file = os.path.join(os.path.dirname(__file__), '../resources/test-data/eapb_mon_14501A_033.xml')
+        xml_file = os.path.join(os.path.dirname(__file__), '../../resources/test-data/eapb_mon_14501A_033.xml')
         xml_in = open(xml_file, encoding='utf-8').read()
         storage_service.storage_add(xml_in, xml_file)
 
         assert storage_service.storage_size() == 1
-
+        assert storage_service.storage_xquery('count(/)') == '1'
         assert storage_service.storage_xquery('/book/@contentType') == 'contentType=\"monograph\"'
 
         xml_out = storage_service.storage_xquery("/")

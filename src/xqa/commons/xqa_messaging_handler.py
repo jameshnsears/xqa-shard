@@ -12,7 +12,6 @@ class XqaMessagingHandler(MessagingHandler):
             self.delay = 1
 
     def __init__(self):
-        MessagingHandler.__init__(self)
         self.retry_attempts = 0
 
     @staticmethod
@@ -21,13 +20,12 @@ class XqaMessagingHandler(MessagingHandler):
 
     def _cmd_stop(self, event):
         self._stopping = True
-        event.connection.close()
         logging.info("EXIT")
-        exit(0)
+        event.connection.close()
+        self.container.stop()
 
     def on_transport_error(self, event):
         self.retry_attempts += 1
         if self.retry_attempts == 10:
-            logging.error('Unable to connect to message_broker_host')
             raise ConnectionException(event.transport.condition.description)
         super()

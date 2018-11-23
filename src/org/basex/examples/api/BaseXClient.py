@@ -12,7 +12,7 @@ LIMITATIONS:
 * also, will fail to extract stored binary content, maybe.
   (both my code, and original don't care escaped 0xff.)
 
-Documentation: http://docs.api.org/wiki/Clients
+Documentation: http://docs.basex.org/wiki/Clients
 
 (C) 2012, Hiroaki Itoh. BSD License
     updated 2014 by Marc van Grootel
@@ -97,7 +97,7 @@ directly."""
 class Session(object):
     """class Session.
 
-    see http://docs.api.org/wiki/Server_Protocol
+    see http://docs.basex.org/wiki/Server_Protocol
     """
 
     def __init__(self, host, port, user, password,
@@ -204,15 +204,14 @@ yourself explicitly."""
         # at this time, we can't use __send_input itself because of encoding
         # problem. we have to build bytearray directly.
         if not isinstance(content, (bytearray, bytes)):
-            raise ValueError("Sorry, content must be bytearray or bytes, not " +
-                             str(type(content)))
+            raise ValueError("Sorry, content must be bytearray or bytes, not " + str(type(content)))
 
         # ------------------------------------------
         # chr(code) + path + chr(0) + content + chr(0)
         data = bytearray([code])
         try:
             data.extend(path)
-        except:
+        except Exception:
             data.extend(path.encode('utf-8'))
         data.extend([0])
         data.extend(content)
@@ -237,7 +236,7 @@ yourself explicitly."""
         """iter_receive() -> (typecode, item)
 
 iterate while the query returns items.
-typecode list is in http://docs.api.org/wiki/Server_Protocol:_Types
+typecode list is in http://docs.basex.org/wiki/Server_Protocol:_Types
 """
         self.__swrapper.clear_buffer()
         typecode = self.__swrapper.recv_single_byte()
@@ -256,7 +255,7 @@ typecode list is in http://docs.api.org/wiki/Server_Protocol:_Types
 class Query():
     """class Query.
 
-    see http://docs.api.org/wiki/Server_Protocol
+    see http://docs.basex.org/wiki/Server_Protocol
     """
 
     def __init__(self, session, querytxt):
