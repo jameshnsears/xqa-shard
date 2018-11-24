@@ -3,6 +3,7 @@ version: '3'
 services:
   xqa-message-broker:
     image: jameshnsears/xqa-message-broker:latest
+    container_name: xqa-message-broker
     ports:
       - "5672:5672"
       - "8161:8161"
@@ -14,6 +15,7 @@ services:
   xqa-shard:
     build: .
     image: "xqa-shard"
+    container_name: xqa-shard
     command: ["-message_broker_host", "xqa-message-broker"]
     ports:
       - 1984
