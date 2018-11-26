@@ -26,3 +26,11 @@ script:
 
 after_success:
   - COVERALLS_REPO_TOKEN=gNQsMIHlJD0YeTwwcdM1UVEh4lJxUV77t coveralls
+
+after_failure:
+  - docker images
+  - docker ps -a
+  - docker logs xqa-ingest
+  - docker logs xqa-message-broker
+  - docker logs xqa-ingest-balancer
+  - docker logs xqa-shard
