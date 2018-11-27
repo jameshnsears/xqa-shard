@@ -29,6 +29,7 @@ USER xqa
 
 WORKDIR ${OPTDIR}${XQA}
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 ENV PYTHONPATH=${OPTDIR}/${XQA}
