@@ -9,7 +9,7 @@ import psutil
 from org.basex.examples.api import BaseXClient
 from xqa.commons import configuration
 
-BASEX_JAR = 'BaseX91.jar'
+BASEX_JAR = 'BaseX902.jar'
 
 
 class StorageService:
@@ -82,7 +82,9 @@ class StorageService:
         self._session.execute('OPEN %s' % configuration.storage_database_name)
 
     def storage_add(self, xml, subject):
+        logging.debug('START')
         self._session.add(subject, xml)
+        logging.debug('END')
         process = psutil.Process(os.getpid())
         logging.info('size=%d; memory_percent=%f' % (self.storage_size(), process.memory_percent()))
 

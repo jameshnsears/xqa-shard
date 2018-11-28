@@ -21,7 +21,7 @@ Documentation: http://docs.basex.org/wiki/Clients
 
 import hashlib
 import socket
-
+import threading
 
 # ---------------------------------
 #
@@ -204,14 +204,15 @@ yourself explicitly."""
         # at this time, we can't use __send_input itself because of encoding
         # problem. we have to build bytearray directly.
         if not isinstance(content, (bytearray, bytes)):
-            raise ValueError("Sorry, content must be bytearray or bytes, not " + str(type(content)))
+            raise ValueError("Sorry, content must be bytearray or bytes, not " +
+                             str(type(content)))
 
         # ------------------------------------------
         # chr(code) + path + chr(0) + content + chr(0)
         data = bytearray([code])
         try:
             data.extend(path)
-        except Exception:
+        except:
             data.extend(path.encode('utf-8'))
         data.extend([0])
         data.extend(content)
@@ -246,7 +247,6 @@ typecode list is in http://docs.basex.org/wiki/Server_Protocol:_Types
             typecode = self.__swrapper.recv_single_byte()
         if not self.server_response_success():
             raise IOError(self.recv_c_str())
-
 
 # ---------------------------------
 #
