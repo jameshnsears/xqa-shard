@@ -9,7 +9,7 @@ import psutil
 from org.basex.examples.api import BaseXClient
 from xqa.commons import configuration
 
-BASEX_JAR = 'BaseX902.jar'
+BASEX_JAR = 'BaseX91.jar'
 
 
 class StorageService:
