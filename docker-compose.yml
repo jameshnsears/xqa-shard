@@ -14,7 +14,7 @@ services:
 
   xqa-shard:
     build: .
-    image: "xqa-shard"
+    image: xqa-shard
     container_name: xqa-shard
     command: ["-message_broker_host", "xqa-message-broker"]
     ports:
