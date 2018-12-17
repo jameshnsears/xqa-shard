@@ -30,6 +30,7 @@ before_install:
 
 script:
   - pytest -s --junitxml=junitxml.xml --cov-report term-missing --cov=.
+  - ls -al
 
 after_success:
   - COVERALLS_REPO_TOKEN=59P9elXG606x9EM64dxWGQ6i8XAZ1yFNO coveralls
