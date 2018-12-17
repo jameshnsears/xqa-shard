@@ -9,6 +9,7 @@ from proton.reactor import Backoff
 class XqaMessagingHandler(MessagingHandler):
     class XqaBackoff(Backoff):
         def __init__(self):
+            super().__init__()
             self.delay = 1
 
     def __init__(self):

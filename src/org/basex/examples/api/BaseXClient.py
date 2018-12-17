@@ -21,7 +21,7 @@ Documentation: http://docs.basex.org/wiki/Clients
 
 import hashlib
 import socket
-import threading
+
 
 # ---------------------------------
 #

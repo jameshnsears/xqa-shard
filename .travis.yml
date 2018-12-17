@@ -22,14 +22,13 @@ python:
   - "3.6"
 
 before_install:
-  - docker-compose pull xqa-message-broker
-
   - pip install --upgrade pip
   - pip install -r requirements.txt
   - flake8 src test
+  - export PYTHONPATH=src:test:$PYTHONPATH
+  - pylint --rcfile=setup.cfg src test -r n > pylint-report.txt 2>&1 || true
 
 script:
-  - export PYTHONPATH=src:$PYTHONPATH
   - pytest -s --cov-report term-missing --cov=.
 
 after_success:
