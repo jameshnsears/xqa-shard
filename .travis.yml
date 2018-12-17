@@ -29,7 +29,7 @@ before_install:
   - pylint --rcfile=setup.cfg src test -r n > pylint-report.txt 2>&1 || true
 
 script:
-  - pytest -s --cov-report term-missing --cov=.
+  - pytest -s --junitxml=junitxml.xml --cov-report term-missing --cov=.
 
 after_success:
   - COVERALLS_REPO_TOKEN=59P9elXG606x9EM64dxWGQ6i8XAZ1yFNO coveralls
