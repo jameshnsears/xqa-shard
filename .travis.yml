@@ -3,13 +3,20 @@ sudo: required
 notifications:
 email: james.hn.sears@gmail.com
 
+addons:
+  sonarcloud:
+    organization: "jameshnsears-github"
+    token:
+      secure: "Zi5Rd+LTxTsTkDQSDh12laH1T+n8bSWrwwvLqGft204KwbQLkjmjILKAi8s+3Eh25fm42tDrIOEakP1TDBnin0s8rI5L3o6c5Xjn2wMY42JNL4qpjUm+dKpkyej9/Kpo3epRaEMaT7Laj4LDCHTW3jKTfmeEaG6Stz79Z+jWFBinu4qoNxhZK5aXlE+uQhPcWLEOApJhIrlR9orZjdC4YpTiCn3gnPaqAF30iEf2J9UbL9NBxNrE1KXnhZqnr5VFAR1/pIP5aBVu5ASbpCVOD3Te5ArE3YcskmTGiQa8V/iDsdmQlt10qCN0J/+Lad94/twFLnCd3ofRJtOsiU+No+Zf5wMAFadSoXflxF2nMaGem9IlzjM+2wEi/ML/KPrLzR1fSSrpxSe+vXQxlwTRmC5iKn1SuH8sp+MbPNLxuspivVmPq50xQZy9iTsZ4cpyL9QYVTNm8lOliRSrLYi9rlznypQT6++jGD2dLc3dDxgubbHhh0N472SgvgwLWYJToCwvE4lLb/LH70mTgKmUngOlVvOpLBk5O/mZAuti422rOFKs3SVXAYpGOIsVz1O8ERRU7Rlw5kkui2SB87bbLeqP/hXJnL+IAYmWeaETklhoIK/llWyRpLMdIj0WWo6Qnk3QK/nuF7O3aJQcZDXhUk72pCCT2J3XXNuw6OgIr7o="
+
 services:
   - docker
 
-language: python
+cache:
+  directories:
+  - $HOME/.sonar/cache
 
-git:
-  depth: false
+language: python
 
 python:
   - "3.6"
@@ -27,6 +34,7 @@ script:
 
 after_success:
   - COVERALLS_REPO_TOKEN=59P9elXG606x9EM64dxWGQ6i8XAZ1yFNO coveralls
+  - sonar-scanner
 
 after_failure:
   - docker images
