@@ -228,7 +228,9 @@ def test_shard(dockerpy):
         'python3',
         os.path.join(os.path.dirname(__file__), '../../../src/xqa/shard.py'),
         '-message_broker_host', '0.0.0.0'])
-    sleep(2)
+
+    # else we can expose a broker defect on travis
+    sleep(10)
 
     try:
         Container(IngestBalancerTest()).run()
