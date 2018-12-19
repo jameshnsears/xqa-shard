@@ -1,9 +1,9 @@
 FROM ubuntu:bionic
 
-MAINTAINER james.hn.sears@gmail.com
-
-RUN apt-get -qq update
-RUN apt-get -qq install -y openjdk-11-jre python3-pip python3-dev
+RUN apt-get -qq update \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+RUN apt-get -qq install -y --no-install-recommends openjdk-11-jre python3-pip python3-dev
 
 RUN apt-get install --reinstall -y locales
 RUN sed -i 's/# en_GB.UTF-8 UTF-8/en_GB.UTF-8 UTF-8/' /etc/locale.gen
@@ -18,7 +18,7 @@ ARG XQA=xqa-shard
 
 RUN mkdir ${OPTDIR}/${XQA}
 COPY src ${OPTDIR}/${XQA}
-ADD requirements.txt ${OPTDIR}/${XQA}
+COPY requirements.txt ${OPTDIR}/${XQA}
 
 RUN useradd -r -M -d ${OPTDIR}${XQA} xqa
 RUN chown -R xqa:xqa ${OPTDIR}${XQA}
