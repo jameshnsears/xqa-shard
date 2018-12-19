@@ -17,9 +17,9 @@ def test_storage_service():
 
         xml_out = storage_service.storage_xquery("/")
         assert hashlib.sha256(xml_out.encode('utf-8')).hexdigest() == hashlib.sha256(xml_in.encode('utf-8')).hexdigest()
-    except AssertionError as e:
-        open(xml_file, 'w').write(xml_out)
-        raise e
+    # except AssertionError as e:
+    #     open(xml_file, 'w').write(xml_out)
+    #     raise e
     finally:
         storage_service.storage_terminate()
 
