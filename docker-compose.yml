@@ -13,6 +13,17 @@ services:
     networks:
       - xqa
 
+  xqa-message-broker:
+    image: jameshnsears/xqa-message-broker:latest
+    container_name: xqa-message-broker
+    ports:
+      - "5672:5672"
+      - "8161:8161"
+    volumes:
+      - "xqa-message-broker:/opt/apache-activemq-5.15.7/data"
+    networks:
+      - xqa
+
 volumes:
   xqa-message-broker:
 
