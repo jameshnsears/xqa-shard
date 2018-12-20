@@ -1,8 +1,6 @@
 FROM ubuntu:bionic
 
-RUN apt-get -qq update \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+RUN apt-get -qq update
 RUN apt-get -qq install -y --no-install-recommends openjdk-11-jre python3-pip python3-dev
 
 RUN apt-get install --reinstall -y locales
