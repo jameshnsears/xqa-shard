@@ -4,8 +4,7 @@ services:
   xqa-shard:
     build: .
     image: xqa-shard
-    container_name: xqa-shard
-    command: ["-message_broker_host", "xqa-message-broker"]
+    command: ["-message_broker_host", "xqa-message-broker", "-storage_mainmem"]
     ports:
       - 1984
     depends_on:

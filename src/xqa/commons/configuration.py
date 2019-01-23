@@ -11,6 +11,7 @@ message_broker_shard_insert_uuid_queue = 'queue://xqa.shard.insert'
 message_broker_shard_xquery_topic = 'topic://xqa.shard.xquery'
 message_broker_db_amqp_insert_event_queue = 'queue://xqa.event'
 
+storage_mainmem = 'false'
 storage_host = '0.0.0.0'
 storage_port = 1984
 storage_user = 'admin'

@@ -37,7 +37,8 @@ class StorageService:
 
     def _server_create(self):
         self._basex = Popen(
-            'java -cp %s -Dorg.basex.MAINMEM=true -Dorg.basex.path=/tmp org.basex.BaseXServer -S -z' % self._cp,
+            'java -cp %s -Dorg.basex.MAINMEM=%s -Dorg.basex.path=/tmp org.basex.BaseXServer -S -z' % 
+            (self._cp, configuration.storage_mainmem),
             stdout=PIPE, stderr=PIPE, shell=True, preexec_fn=os.setsid)
         basex_stdout, basex_stderr = self._basex.communicate()
         logging.info('pid=%d; stdout=%s; stderr=%s' % (self._basex.pid, basex_stdout, basex_stderr))

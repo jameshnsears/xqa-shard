@@ -24,6 +24,8 @@ class Shard(XqaMessagingHandler):
 
         logging.info(self._service_id)
         logging.debug('-message_broker_host=%s' % configuration.message_broker_host)
+        logging.debug('-configuration.storage_mainmem=%s' % configuration.storage_mainmem)
+
 
         self._storage_service = StorageService()
 
@@ -180,8 +182,12 @@ class Shard(XqaMessagingHandler):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-message_broker_host', '--message_broker_host', required=True, help='i.e. xqa-message-broker')
+    parser.add_argument('-storage_mainmem', '--storage_mainmem', required=False, help='if passed in then store db in RAM', action='store_true')
     args = parser.parse_args()
     configuration.message_broker_host = args.message_broker_host
+
+    if args.storage_mainmem:
+        configuration.storage_mainmem = "true"
 
     try:
         Container(Shard()).run()
