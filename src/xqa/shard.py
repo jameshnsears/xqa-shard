@@ -26,7 +26,6 @@ class Shard(XqaMessagingHandler):
         logging.debug('-message_broker_host=%s' % configuration.message_broker_host)
         logging.debug('-configuration.storage_mainmem=%s' % configuration.storage_mainmem)
 
-
         self._storage_service = StorageService()
 
     def on_start(self, event):
