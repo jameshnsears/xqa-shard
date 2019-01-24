@@ -13,7 +13,7 @@ BASEX_JAR = 'BaseX91.jar'
 
 
 class StorageService:
-    INVALID_XQUERY_SYNTAX = 'Invalid XQuery Syntax'
+    NO_RESULT_FROM_XQUERY = 'No Results From XQuery'
     INVALID_XQUERY_SYNTAX_XPST0003 = 'Invalid XQuery Syntax - XPST0003'
 
     def __init__(self, cp=os.path.join(os.path.dirname(__file__), BASEX_JAR)):
@@ -97,7 +97,7 @@ class StorageService:
         try:
             xquery_response = self._session.execute('xquery %s' % xquery)
             if xquery_response == "":
-                return StorageService.INVALID_XQUERY_SYNTAX
+                return StorageService.NO_RESULT_FROM_XQUERY
             return xquery_response
         except Exception as e:
             logging.warning(e)

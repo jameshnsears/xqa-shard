@@ -27,7 +27,7 @@ def test_storage_service():
 def test_invalid_xquery_syntax():
     try:
         storage_service = StorageService()
-        assert storage_service.storage_xquery('blah') == StorageService.INVALID_XQUERY_SYNTAX
+        assert storage_service.storage_xquery('blah') == StorageService.NO_RESULT_FROM_XQUERY
         assert storage_service.storage_xquery("'XQueryRequest('count(/)'") == StorageService.INVALID_XQUERY_SYNTAX_XPST0003
     finally:
         storage_service.storage_terminate()
